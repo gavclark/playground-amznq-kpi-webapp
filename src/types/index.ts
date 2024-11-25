@@ -1,8 +1,8 @@
 export interface KPI {
-  id: string;
-  code: string;
-  description: string;
-  dataType: 'string' | 'percentage' | 'number';
+  kpiId: string;
+  kpiCode: string;
+  kpiDescription: string;
+  kpidataType: 'string' | 'percentage' | 'number';
   createdAt: string;
   updatedAt: string;
   createdBy: string;
@@ -10,11 +10,10 @@ export interface KPI {
 }
 
 export interface KPIValue {
-  id: string;
   kpiId: string;
   kpiCode: string;
   kpiDescription: string;
-  value: string | number;
+  kpivalue: string | number;
   createdAt: string;
   updatedAt: string;
   createdBy: string;
@@ -22,9 +21,9 @@ export interface KPIValue {
 }
 
 export interface KPIGroup {
-  id: string;
-  code: string;
-  description: string;
+  kpiId: string;
+  kpiCode: string;
+  kpiDescription: string;
   kpiIds: string[];
   createdAt: string;
   updatedAt: string;

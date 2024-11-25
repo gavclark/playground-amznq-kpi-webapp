@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   TextField,
@@ -26,19 +26,46 @@ const MaintainKPIGroup: React.FC = () => {
   const [selectedGroup, setSelectedGroup] = useState<KPIGroup | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState<Partial<KPIGroup>>({
-    code: '',
-    description: '',
+    kpiCode: '',
+    kpiDescription: '',
     kpiIds: [],
   });
   const [groups, setGroups] = useState<KPIGroup[]>([]);
-  const [kpis] = useState<KPI[]>([]); // This would be managed by a proper state management solution
+  const [kpis, setKpis] = useState<KPI[]>([]);
   const [isKPISelectionOpen, setIsKPISelectionOpen] = useState(false);
+
+  useEffect(() => {
+    // Fetch KPIs from an API or other source
+    const fetchKPIs = async () => {
+      const fetchedKPIs: KPI[] = [
+        { kpiId: uuidv4(), kpiCode: 'KPI 1', kpidataType: 'number' , kpiDescription: 'string',
+          createdAt: 'string',
+          updatedAt: 'string',
+          createdBy: 'string',
+          updatedBy: 'string'
+        },
+        { kpiId: uuidv4(), kpiCode: 'KPI 2', kpidataType: 'percentage', kpiDescription: 'string',
+          createdAt: 'string',
+          updatedAt: 'string',
+          createdBy: 'string',
+          updatedBy: 'string' },
+        { kpiId: uuidv4(), kpiCode: 'KPI 3', kpidataType: 'string',  kpiDescription: 'string',
+          createdAt: 'string',
+          updatedAt: 'string',
+          createdBy: 'string',
+          updatedBy: 'string'},
+      ];
+      setKpis(fetchedKPIs);
+    };
+
+    fetchKPIs();
+  }, []);
 
   const handleSearch = () => {
     const found = groups.find(
       (group) =>
-        group.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        group.description.toLowerCase().includes(searchTerm.toLowerCase())
+        group.kpiCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        group.kpiDescription.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setSelectedGroup(found || null);
   };
@@ -46,8 +73,8 @@ const MaintainKPIGroup: React.FC = () => {
   const handleCreateNew = () => {
     setSelectedGroup(null);
     setFormData({
-      code: '',
-      description: '',
+      kpiCode: '',
+      kpiDescription: '',
       kpiIds: [],
     });
     setIsDialogOpen(true);
@@ -65,9 +92,9 @@ const MaintainKPIGroup: React.FC = () => {
     const userId = 'current-user'; // In a real app, this would come from authentication
 
     const newGroup: KPIGroup = {
-      id: selectedGroup?.id || uuidv4(),
-      code: formData.code || '',
-      description: formData.description || '',
+      kpiId: selectedGroup?.kpiId || uuidv4(),
+      kpiCode: formData.kpiCode || '',
+      kpiDescription: formData.kpiDescription || '',
       kpiIds: formData.kpiIds || [],
       createdAt: selectedGroup?.createdAt || timestamp,
       updatedAt: timestamp,
@@ -76,15 +103,15 @@ const MaintainKPIGroup: React.FC = () => {
     };
 
     if (selectedGroup) {
-      setGroups(groups.map((group) => (group.id === selectedGroup.id ? newGroup : group)));
+      setGroups(groups.map((group) => (group.kpiId === selectedGroup.kpiId ? newGroup : group)));
     } else {
       setGroups([...groups, newGroup]);
     }
 
     setIsDialogOpen(false);
     setFormData({
-      code: '',
-      description: '',
+      kpiCode: '',
+      kpiDescription: '',
       kpiIds: [],
     });
     setSelectedGroup(newGroup);
@@ -104,7 +131,7 @@ const MaintainKPIGroup: React.FC = () => {
 
   const getAssignedKPIs = () => {
     const assignedIds = selectedGroup?.kpiIds || [];
-    return kpis.filter(kpi => assignedIds.includes(kpi.id));
+    return kpis.filter(kpi => assignedIds.includes(kpi.kpiId));
   };
 
   return (
@@ -149,10 +176,10 @@ const MaintainKPIGroup: React.FC = () => {
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <Typography><strong>Code:</strong> {selectedGroup.code}</Typography>
+              <Typography><strong>Code:</strong> {selectedGroup.kpiCode}</Typography>
             </Grid>
             <Grid item xs={12}>
-              <Typography><strong>Description:</strong> {selectedGroup.description}</Typography>
+              <Typography><strong>Description:</strong> {selectedGroup.kpiDescription}</Typography>
             </Grid>
             <Grid item xs={12}>
               <Button
@@ -173,14 +200,14 @@ const MaintainKPIGroup: React.FC = () => {
             <List>
               {getAssignedKPIs().map((kpi) => (
                 <ListItem
-                  key={kpi.id}
+                  key={kpi.kpiId}
                   secondaryAction={
                     <IconButton
                       edge="end"
                       onClick={() => {
-                        const newKPIs = selectedGroup.kpiIds.filter(id => id !== kpi.id);
+                        const newKPIs = selectedGroup.kpiIds.filter(id => id !== kpi.kpiId);
                         const updatedGroup = { ...selectedGroup, kpiIds: newKPIs };
-                        setGroups(groups.map(g => g.id === selectedGroup.id ? updatedGroup : g));
+                        setGroups(groups.map(g => g.kpiId === selectedGroup.kpiId ? updatedGroup : g));
                         setSelectedGroup(updatedGroup);
                       }}
                     >
@@ -189,8 +216,8 @@ const MaintainKPIGroup: React.FC = () => {
                   }
                 >
                   <ListItemText
-                    primary={kpi.code}
-                    secondary={kpi.description}
+                    primary={kpi.kpiCode}
+                    secondary={kpi.kpiDescription}
                   />
                 </ListItem>
               ))}
@@ -208,15 +235,15 @@ const MaintainKPIGroup: React.FC = () => {
             <TextField
               fullWidth
               label="Group Code"
-              value={formData.code}
-              onChange={(e) => setFormData({ ...formData, code: e.target.value })}
+              value={formData.kpiCode}
+              onChange={(e) => setFormData({ ...formData, kpiCode: e.target.value })}
               sx={{ mb: 2 }}
             />
             <TextField
               fullWidth
               label="Description"
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              value={formData.kpiDescription}
+              onChange={(e) => setFormData({ ...formData, kpiDescription: e.target.value })}
               multiline
               rows={3}
               sx={{ mb: 2 }}
@@ -248,16 +275,15 @@ const MaintainKPIGroup: React.FC = () => {
         <DialogContent>
           <List>
             {kpis.map((kpi) => (
-              <React.Fragment key={kpi.id}>
+              <React.Fragment key={kpi.kpiId}>
                 <ListItem>
                   <Checkbox
                     edge="start"
-                    checked={(formData.kpiIds || []).includes(kpi.id)}
-                    onChange={() => handleToggleKPI(kpi.id)}
+                    checked={(formData.kpiIds || []).includes(kpi.kpiId)}
+                    onChange={() => handleToggleKPI(kpi.kpiId)}
                   />
                   <ListItemText
-                    primary={kpi.code}
-                    secondary={kpi.description}
+                    primary={kpi.kpiId}
                   />
                 </ListItem>
                 <Divider />

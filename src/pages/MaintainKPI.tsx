@@ -20,17 +20,17 @@ const MaintainKPI: React.FC = () => {
   const [selectedKPI, setSelectedKPI] = useState<KPI | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState<Partial<KPI>>({
-    code: '',
-    description: '',
-    dataType: 'string',
+    kpiCode: '',
+    kpiDescription: '',
+    kpidataType: 'string',
   });
   const [kpis, setKpis] = useState<KPI[]>([]);
 
   const handleSearch = () => {
     const found = kpis.find(
       (kpi) =>
-        kpi.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        kpi.description.toLowerCase().includes(searchTerm.toLowerCase())
+        kpi.kpiCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        kpi.kpiDescription.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setSelectedKPI(found || null);
   };
@@ -38,9 +38,9 @@ const MaintainKPI: React.FC = () => {
   const handleCreateNew = () => {
     setSelectedKPI(null);
     setFormData({
-      code: '',
-      description: '',
-      dataType: 'string',
+      kpiCode: '',
+      kpiDescription: '',
+      kpidataType: 'string',
     });
     setIsDialogOpen(true);
   };
@@ -57,10 +57,10 @@ const MaintainKPI: React.FC = () => {
     const userId = 'current-user'; // In a real app, this would come from authentication
 
     const newKPI: KPI = {
-      id: selectedKPI?.id || uuidv4(),
-      code: formData.code || '',
-      description: formData.description || '',
-      dataType: formData.dataType as 'string' | 'percentage' | 'number',
+      kpiId: selectedKPI?.kpiId || uuidv4(),
+      kpiCode: formData.kpiCode || '',
+      kpiDescription: formData.kpiDescription || '',
+      kpidataType: formData.kpidataType as 'string' | 'percentage' | 'number',
       createdAt: selectedKPI?.createdAt || timestamp,
       updatedAt: timestamp,
       createdBy: selectedKPI?.createdBy || userId,
@@ -68,16 +68,16 @@ const MaintainKPI: React.FC = () => {
     };
 
     if (selectedKPI) {
-      setKpis(kpis.map((kpi) => (kpi.id === selectedKPI.id ? newKPI : kpi)));
+      setKpis(kpis.map((kpi) => (kpi.kpiId === selectedKPI.kpiId ? newKPI : kpi)));
     } else {
       setKpis([...kpis, newKPI]);
     }
 
     setIsDialogOpen(false);
     setFormData({
-      code: '',
-      description: '',
-      dataType: 'string',
+      kpiCode: '',
+      kpiDescription: '',
+      kpidataType: 'string',
     });
   };
 
@@ -123,13 +123,13 @@ const MaintainKPI: React.FC = () => {
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <Typography><strong>Code:</strong> {selectedKPI.code}</Typography>
+              <Typography><strong>Code:</strong> {selectedKPI.kpiCode}</Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
-              <Typography><strong>Data Type:</strong> {selectedKPI.dataType}</Typography>
+              <Typography><strong>Data Type:</strong> {selectedKPI.kpidataType}</Typography>
             </Grid>
             <Grid item xs={12}>
-              <Typography><strong>Description:</strong> {selectedKPI.description}</Typography>
+              <Typography><strong>Description:</strong> {selectedKPI.kpiDescription}</Typography>
             </Grid>
             <Grid item xs={12}>
               <Button
@@ -153,15 +153,15 @@ const MaintainKPI: React.FC = () => {
             <TextField
               fullWidth
               label="KPI Code"
-              value={formData.code}
-              onChange={(e) => setFormData({ ...formData, code: e.target.value })}
+              value={formData.kpiCode}
+              onChange={(e) => setFormData({ ...formData, kpiCode: e.target.value })}
               sx={{ mb: 2 }}
             />
             <TextField
               fullWidth
               label="Description"
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              value={formData.kpiDescription}
+              onChange={(e) => setFormData({ ...formData, kpiDescription: e.target.value })}
               multiline
               rows={3}
               sx={{ mb: 2 }}
@@ -170,8 +170,8 @@ const MaintainKPI: React.FC = () => {
               fullWidth
               select
               label="Data Type"
-              value={formData.dataType}
-              onChange={(e) => setFormData({ ...formData, dataType: e.target.value as 'string' | 'percentage' | 'number' })}
+              value={formData.kpidataType}
+              onChange={(e) => setFormData({ ...formData, kpidataType: e.target.value as 'string' | 'percentage' | 'number' })}
             >
               <MenuItem value="string">String</MenuItem>
               <MenuItem value="percentage">Percentage</MenuItem>
