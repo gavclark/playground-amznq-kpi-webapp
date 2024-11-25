@@ -171,7 +171,7 @@ const MaintainKPI: React.FC = () => {
               select
               label="Data Type"
               value={formData.dataType}
-              onChange={(e) => setFormData({ ...formData, dataType: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, dataType: e.target.value as 'string' | 'percentage' | 'number' })}
             >
               <MenuItem value="string">String</MenuItem>
               <MenuItem value="percentage">Percentage</MenuItem>

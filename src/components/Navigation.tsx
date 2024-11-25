@@ -12,7 +12,7 @@ import {
 import {
   Home as HomeIcon,
   Assessment as AssessmentIcon,
-  AddChart as AddChartIcon,
+  Addchart as AddChartIcon,
   Group as GroupIcon
 } from '@mui/icons-material';
 
