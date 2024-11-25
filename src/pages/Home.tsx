@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography, Paper, Grid } from '@mui/material';
-import { Assessment, AddChart, Group } from '@mui/icons-material';
+import { Assessment, Addchart, Group } from '@mui/icons-material';
 
 const Home: React.FC = () => {
   const features = [
@@ -12,7 +12,7 @@ const Home: React.FC = () => {
     {
       title: 'KPI Values',
       description: 'Record and track KPI values over time',
-      icon: <AddChart sx={{ fontSize: 40 }} />,
+      icon: <Addchart sx={{ fontSize: 40 }} />,
     },
     {
       title: 'KPI Groups',
