@@ -14,6 +14,7 @@ export interface KPIValue {
   kpiCode: string;
   kpiDescription: string;
   kpivalue: string | number;
+  kpiPeriod : string
   createdAt: string;
   updatedAt: string;
   createdBy: string;
