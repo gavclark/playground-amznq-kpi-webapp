@@ -24,7 +24,7 @@ const Home: React.FC = () => {
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
-        Welcome to KPI Management System
+        Welcome to the Arriva KPI Management System
       </Typography>
       <Typography variant="subtitle1" color="textSecondary" paragraph>
         Manage your Key Performance Indicators efficiently
