@@ -20,6 +20,7 @@ import {
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import { KPI, KPIGroup } from '../types';
 import { v4 as uuidv4 } from 'uuid';
+import { addKPIGroup, getKPIGroups, getKPIs } from '../utils/indexedDB';
 
 const MaintainKPIGroup: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -87,10 +88,10 @@ const MaintainKPIGroup: React.FC = () => {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const timestamp = new Date().toISOString();
     const userId = 'current-user'; // In a real app, this would come from authentication
-
+  
     const newGroup: KPIGroup = {
       kpiId: selectedGroup?.kpiId || uuidv4(),
       kpiCode: formData.kpiCode || '',
@@ -101,13 +102,15 @@ const MaintainKPIGroup: React.FC = () => {
       createdBy: selectedGroup?.createdBy || userId,
       updatedBy: userId,
     };
-
+  
+    await addKPIGroup(newGroup);
+  
     if (selectedGroup) {
       setGroups(groups.map((group) => (group.kpiId === selectedGroup.kpiId ? newGroup : group)));
     } else {
       setGroups([...groups, newGroup]);
     }
-
+  
     setIsDialogOpen(false);
     setFormData({
       kpiCode: '',
@@ -116,6 +119,21 @@ const MaintainKPIGroup: React.FC = () => {
     });
     setSelectedGroup(newGroup);
   };
+
+  useEffect(() => {
+    const fetchKPIs = async () => {
+      const fetchedKPIs = await getKPIs();
+      setKpis(fetchedKPIs);
+    };
+  
+    const fetchKPIGroups = async () => {
+      const fetchedGroups = await getKPIGroups();
+      setGroups(fetchedGroups);
+    };
+  
+    fetchKPIs();
+    fetchKPIGroups();
+  }, []);
 
   const handleOpenKPISelection = () => {
     setIsKPISelectionOpen(true);
