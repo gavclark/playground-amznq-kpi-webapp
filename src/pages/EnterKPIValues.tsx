@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   TextField,
@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import { KPI } from '../types';
 import { v4 as uuidv4 } from 'uuid';
+import { addKPIValue, getKPIs } from '../utils/indexedDB';
 
 const validateKPIValue = (value: string, dataType: KPI['kpidataType']): boolean => {
   switch (dataType) {
@@ -70,9 +71,24 @@ const EnterKPIValues: React.FC = () => {
     setKpiValue(event.target.value);
   };
 
-  const handleSaveKPIValue = () => {
+  const handleSaveKPIValue = async () => {
     if (selectedKPI && validateKPIValue(kpiValue, selectedKPI.kpidataType)) {
-      // Save the KPI value (e.g., send it to an API or update the state)
+      const timestamp = new Date().toISOString();
+      const userId = 'current-user'; // In a real app, this would come from authentication
+  
+      const newKPIValue = {
+        kpiId: selectedKPI.kpiId,
+        kpiCode: selectedKPI.kpiCode,
+        kpiDescription: selectedKPI.kpiDescription,
+        kpivalue: kpiValue,
+        createdAt: timestamp,
+        updatedAt: timestamp,
+        createdBy: userId,
+        updatedBy: userId,
+      };
+  
+      await addKPIValue(newKPIValue);
+  
       console.log(`Saved KPI value: ${formatKPIValue(kpiValue, selectedKPI.kpidataType)}`);
       // Reset the form
       setSelectedKPI(null);
@@ -81,6 +97,15 @@ const EnterKPIValues: React.FC = () => {
       alert('Invalid KPI value');
     }
   };
+
+  useEffect(() => {
+    const fetchKPIs = async () => {
+      const fetchedKPIs = await getKPIs();
+      setKpis(fetchedKPIs);
+    };
+  
+    fetchKPIs();
+  }, []);
 
   const filteredKPIs = kpis.filter(kpi =>
     kpi.kpiCode.toLowerCase().includes(searchTerm.toLowerCase())
