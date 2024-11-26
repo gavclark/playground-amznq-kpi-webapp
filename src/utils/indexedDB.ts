@@ -1,4 +1,5 @@
 import { openDB } from 'idb';
+import { KPI, KPIValue, KPIGroup } from '../types';
 
 const DB_NAME = 'KPIDatabase';
 const DB_VERSION = 1;
@@ -23,32 +24,32 @@ const initDB = async () => {
   return db;
 };
 
-export const addKPI = async (kpi) => {
+export const addKPI = async (kpi: KPI) => {
   const db = await initDB();
   await db.put(KPI_STORE, kpi);
 };
 
-export const getKPIs = async () => {
+export const getKPIs = async (): Promise<KPI[]> => {
   const db = await initDB();
   return await db.getAll(KPI_STORE);
 };
 
-export const addKPIValue = async (kpiValue) => {
+export const addKPIValue = async (kpiValue: KPIValue) => {
   const db = await initDB();
   await db.put(KPI_VALUE_STORE, kpiValue);
 };
 
-export const getKPIValues = async () => {
+export const getKPIValues = async (): Promise<KPIValue[]> => {
   const db = await initDB();
   return await db.getAll(KPI_VALUE_STORE);
 };
 
-export const addKPIGroup = async (kpiGroup) => {
+export const addKPIGroup = async (kpiGroup: KPIGroup) => {
   const db = await initDB();
   await db.put(KPI_GROUP_STORE, kpiGroup);
 };
 
-export const getKPIGroups = async () => {
+export const getKPIGroups = async (): Promise<KPIGroup[]> => {
   const db = await initDB();
   return await db.getAll(KPI_GROUP_STORE);
 };
