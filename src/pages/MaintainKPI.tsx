@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   TextField,
@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { KPI } from '../types';
 import { v4 as uuidv4 } from 'uuid';
+import { addKPI, getKPIs } from '../utils/indexedDB';
 
 const MaintainKPI: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -52,10 +53,10 @@ const MaintainKPI: React.FC = () => {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const timestamp = new Date().toISOString();
     const userId = 'current-user'; // In a real app, this would come from authentication
-
+  
     const newKPI: KPI = {
       kpiId: selectedKPI?.kpiId || uuidv4(),
       kpiCode: formData.kpiCode || '',
@@ -66,13 +67,15 @@ const MaintainKPI: React.FC = () => {
       createdBy: selectedKPI?.createdBy || userId,
       updatedBy: userId,
     };
-
+  
+    await addKPI(newKPI);
+  
     if (selectedKPI) {
       setKpis(kpis.map((kpi) => (kpi.kpiId === selectedKPI.kpiId ? newKPI : kpi)));
     } else {
       setKpis([...kpis, newKPI]);
     }
-
+  
     setIsDialogOpen(false);
     setFormData({
       kpiCode: '',
@@ -80,6 +83,15 @@ const MaintainKPI: React.FC = () => {
       kpidataType: 'string',
     });
   };
+
+  useEffect(() => {
+    const fetchKPIs = async () => {
+      const fetchedKPIs = await getKPIs();
+      setKpis(fetchedKPIs);
+    };
+  
+    fetchKPIs();
+  }, []);
 
   return (
     <Box>
@@ -191,3 +203,4 @@ const MaintainKPI: React.FC = () => {
 };
 
 export default MaintainKPI;
+
